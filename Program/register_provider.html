@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สมัครเปิดร้านค้า - เว็บไซต์อาหารจีน</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.php">หน้าหลัก</a></li>
+                    <li><a href="register.html" class="active">สมัครสมาชิก</a></li>
+                    <li><a href="login.html">เข้าสู่ระบบ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="register-container">
+        <div class="register-box">
+            <h2>สมัครเปิดร้านค้า (ผู้ประกอบการ)</h2>
+            <!-- ส่งไปที่ไฟล์ประมวลผลสำหรับผู้ประกอบการโดยเฉพาะ -->
+            <form action="register_provider_process.php" method="POST">
+                <div class="input-group">
+                    <!-- เปลี่ยนเป็น provider_name -->
+                    <input type="text" name="provider_name" placeholder="ชื่อร้านค้า / ชื่อ-นามสกุลผู้ประกอบการ" required>
+                </div>
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <input type="tel" name="tel" placeholder="Phone number" maxlength="10" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="confirm_password" placeholder="Confirm password" required>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" class="btn-submit">ยืนยัน</button>
+                    <a href="index.php" class="btn-cancel">ยกเลิก</a>
+                </div>
+                
+                <div style="margin-top: 20px; font-size: 14px;">
+                    <a href="register.html" style="color: #a00000; text-decoration: underline;">คุณเป็นลูกค้าทั่วไปใช่ไหม? สมัครสมาชิกที่นี่</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+</body>
+</html>
