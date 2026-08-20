@@ -51,6 +51,7 @@ $res_reviews = $conn->query($sql_reviews);
 <html lang="th">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>รีวิวจากลูกค้า - <?php echo htmlspecialchars($shop['shop_name']); ?></title>
     <style>
         body { font-family: Arial, sans-serif; background: #f8f9fa; padding: 20px; }
@@ -67,8 +68,9 @@ $res_reviews = $conn->query($sql_reviews);
         .comment-text { color: #444; margin: 8px 0; line-height: 1.5; }
         .review-img { max-width: 140px; max-height: 140px; border-radius: 6px; margin-top: 8px; border: 1px solid #ddd; }
     </style>
+    <link rel="stylesheet" href="theme.css?v=20260820">
 </head>
-<body>
+<body class="page-provider-reviews provider-ui">
 <div class="container">
     <a href="provider_dashboard.php" class="btn-back">⬅ กลับ Dashboard</a>
     <h2>💬 รีวิวและความคิดเห็นจากลูกค้า</h2>

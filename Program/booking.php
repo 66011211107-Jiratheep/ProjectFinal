@@ -26,44 +26,31 @@ $stmt_pkg->bind_param("i", $shop_id);
 $stmt_pkg->execute();
 $res_pkg = $stmt_pkg->get_result();
 
-// 3. ดึงบริการเสริม (additional_service) ของร้านนี้
+// 3. ดึงบริการเสริม
 $stmt_srv = $conn->prepare("SELECT * FROM additional_service WHERE shop_id = ?");
 $stmt_srv->bind_param("i", $shop_id);
 $stmt_srv->execute();
 $res_srv = $stmt_srv->get_result();
 
-// 4. ดึงวันที่ถูกจองแล้ว
+// 4. ดึงวันที่ถูกจองแล้ว (ถ้ามีการจองแล้ว 1 รายการ ให้ถือว่าเต็มทันที)
 $booked_dates = [];
 $stmt_booking = $conn->prepare("
-    SELECT event_date, COUNT(*) as total_booking 
+    SELECT DISTINCT event_date 
     FROM booking 
-    WHERE shop_id = ? AND booking_status IN ('pending', 'confirmed', 'completed', 'รอนุมัติ', 'อนุมัติแล้ว') 
-    GROUP BY event_date
+    WHERE shop_id = ? AND booking_status IN ('pending', 'confirmed', 'completed', 'รอนุมัติ', 'อนุมัติแล้ว')
 ");
 $stmt_booking->bind_param("i", $shop_id);
 $stmt_booking->execute();
 $res_booking = $stmt_booking->get_result();
 
 while ($b = $res_booking->fetch_assoc()) {
-    $count = intval($b['total_booking']);
-    if ($count >= 2) {
-        $booked_dates[] = [
-            'title' => '❌ เต็มแล้ว (2/2)',
-            'start' => $b['event_date'],
-            'color' => '#dc3545',
-            'allDay' => true,
-            'isFull' => true
-        ];
-    } else {
-        $booked_dates[] = [
-            'title' => '⚠️ จองแล้ว 1/2 คิว',
-            'start' => $b['event_date'],
-            'color' => '#ffc107',
-            'textColor' => '#000000',
-            'allDay' => true,
-            'isFull' => false
-        ];
-    }
+    $booked_dates[] = [
+        'title' => '❌ จองแล้ว / ไม่ว่าง',
+        'start' => $b['event_date'],
+        'color' => '#dc3545', // แสดงสีแดงเตือนว่าคิวเต็ม
+        'allDay' => true,
+        'isFull' => true
+    ];
 }
 ?>
 
@@ -92,20 +79,20 @@ while ($b = $res_booking->fetch_assoc()) {
         input[type="text"], input[type="number"], input[type="time"], select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
         .service-list { background: #fdf8f5; border: 1px solid #eedad0; padding: 12px; border-radius: 6px; }
         .service-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-        .service-item:last-child { margin-bottom: 0; }
         .selected-date-display { background: #d4edda; color: #155724; padding: 10px; border-radius: 6px; margin-bottom: 15px; font-weight: bold; text-align: center; }
         .btn-submit { background: #8b0000; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; }
         .btn-submit:hover { background: #a00000; }
     </style>
+    <link rel="stylesheet" href="theme.css?v=20260820">
 </head>
-<body>
+<body class="page-booking customer-workspace">
 
 <div class="container-box">
     <a href="shop_detail.php?shop_id=<?php echo $shop_id; ?>" class="btn-back">⬅ ย้อนกลับไปหน้าร้านค้า</a>
     <h2>📅 ปฏิทินเช็กวันว่าง - <?php echo htmlspecialchars($shop['shop_name']); ?></h2>
     
     <div class="instruction-badge">
-        👉 คลิกเลือก <strong>"วันที่ว่าง"</strong> บนปฏิทินเพื่อเริ่มทำการจองโต๊ะจีน (รับสูงสุด 2 คิว/วัน)
+        👉 คลิกเลือก <strong>"วันที่ว่าง"</strong> บนปฏิทินเพื่อเริ่มทำการจองโต๊ะจีน (รับ 1 งาน/วัน)
     </div>
 
     <div id="calendar"></div>
@@ -133,7 +120,6 @@ while ($b = $res_booking->fetch_assoc()) {
                 </select>
             </div>
 
-            <!-- บริการเสริม ดึงจากตาราง additional_service -->
             <?php if ($res_srv && $res_srv->num_rows > 0): ?>
             <div class="form-group">
                 <label>เลือกบริการเสริมเพิ่มเติม (ถ้าต้องการ):</label>
@@ -185,25 +171,26 @@ document.addEventListener('DOMContentLoaded', function() {
         headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
         events: bookedEvents,
         dateClick: function(info) {
+            // เช็กไม่ให้เลือกวันที่ผ่านมาแล้ว
             if (info.dateStr < today) {
                 alert('❌ ไม่สามารถเลือกวันที่ผ่านมาแล้วได้ครับ');
                 return;
             }
 
-            var existingEvent = bookedEvents.find(function(event) {
+            // เช็กว่าวันที่เลือกมีคิวถูกจองไปแล้วหรือยัง
+            var isBooked = bookedEvents.some(function(event) {
                 return event.start === info.dateStr;
             });
 
-            if (existingEvent && existingEvent.isFull) {
-                alert('❌ วันที่นี้ถูกจองเต็มแล้ว (2/2 คิว) กรุณาเลือกวันอื่นครับ');
+            if (isBooked) {
+                alert('❌ วันที่นี้มีผู้จองแล้วครับ กรุณาเลือกวันอื่น');
                 document.getElementById('bookingFormSection').style.display = 'none';
             } else {
                 document.getElementById('bookingFormSection').style.display = 'block';
                 document.getElementById('event_date_input').value = info.dateStr;
                 
                 var dateParts = info.dateStr.split('-');
-                var extraMsg = (existingEvent && !existingEvent.isFull) ? ' (คิวที่ 2)' : '';
-                document.getElementById('dateText').innerText = '✅ คุณเลือกวันที่จัดงาน: ' + dateParts[2] + '/' + dateParts[1] + '/' + (parseInt(dateParts[0]) + 543) + extraMsg;
+                document.getElementById('dateText').innerText = '✅ คุณเลือกวันที่จัดงาน: ' + dateParts[2] + '/' + dateParts[1] + '/' + (parseInt(dateParts[0]) + 543);
                 
                 document.getElementById('bookingFormSection').scrollIntoView({ behavior: 'smooth' });
             }

@@ -183,18 +183,13 @@ $result = $conn->query($sql);
             margin: 0;
         }
     </style>
+    <link rel="stylesheet" href="theme.css?v=20260820-3">
 </head>
-<body>
+<body class="page-home customer-ui">
 
     <!-- แถบ Header -->
     <div class="navbar">
         <a href="index.php" class="logo">โต๊ะจีนออนไลน์</a>
-
-        <!-- ฟอร์มค้นหาร้านค้า -->
-        <form action="index.php" method="GET" class="search-box">
-            <input type="text" name="search" placeholder="ค้นหาร้านโต๊ะจีน หรือพื้นที่บริการ..." value="<?php echo htmlspecialchars($search); ?>">
-            <button type="submit">🔍</button>
-        </form>
 
         <?php if (!$is_logged_in): ?>
             <ul class="guest-nav">
@@ -204,7 +199,7 @@ $result = $conn->query($sql);
             </ul>
         <?php else: ?>
             <div class="user-menu">
-                <span class="user-name">👤 <?php echo htmlspecialchars($_SESSION['name'] ?? 'ลูกค้า'); ?> ▾</span>
+                <button type="button" class="user-name" aria-haspopup="true" aria-expanded="false">👤 <?php echo htmlspecialchars($_SESSION['name'] ?? 'ลูกค้า'); ?> ▾</button>
                 <div class="dropdown-content">
                     <a href="profile.php">บัญชีของฉัน</a>
                     <a href="my_bookings.php">ประวัติการจอง</a>
@@ -214,9 +209,27 @@ $result = $conn->query($sql);
         <?php endif; ?>
     </div>
 
+    <section class="home-hero">
+        <div class="hero-inner">
+            <div class="hero-eyebrow">แพลตฟอร์มรวมผู้ประกอบการโต๊ะจีน</div>
+            <h1 class="hero-title">ค้นหาโต๊ะจีนที่ใช่ สำหรับทุกงานสำคัญ</h1>
+            <p class="hero-subtitle">ค้นหาร้านจากชื่อหรือพื้นที่บริการ แล้วเปรียบเทียบแพ็กเกจก่อนตัดสินใจจองได้ในที่เดียว</p>
+            <form action="index.php" method="GET" class="hero-search">
+                <input type="text" name="search" aria-label="ค้นหาร้านโต๊ะจีน" placeholder="ค้นหาร้านโต๊ะจีน หรือพื้นที่บริการ..." value="<?php echo htmlspecialchars($search); ?>">
+                <button type="submit">ค้นหาร้าน</button>
+            </form>
+        </div>
+    </section>
+
     <!-- รายการร้านค้า -->
     <div class="main-container">
-        <div class="page-title">ร้านโต๊ะจีนที่เปิดให้บริการ</div>
+        <div class="page-title-row">
+            <div>
+                <p class="page-kicker">ร้านที่ผ่านการอนุมัติ</p>
+                <div class="page-title">ร้านโต๊ะจีนที่เปิดให้บริการ</div>
+            </div>
+            <div class="result-note"><?php echo isset($result) ? number_format($result->num_rows) : 0; ?> ร้าน</div>
+        </div>
 
         <div class="shop-grid">
             <?php if (isset($result) && $result->num_rows > 0): ?>
@@ -234,16 +247,18 @@ $result = $conn->query($sql);
                             <div class="shop-name"><?php echo htmlspecialchars($shop['shop_name']); ?></div>
                             <!-- ปรับมาใช้ service_area แทน province -->
                             <p class="shop-desc">📍 <?php echo htmlspecialchars(!empty($shop['service_area']) ? $shop['service_area'] : 'ไม่ระบุพื้นที่'); ?></p>
+                            <span class="shop-card-action">ดูรายละเอียดร้าน →</span>
                         </div>
                     </a>
                 <?php endwhile; ?>
             <?php else: ?>
-                <div style="grid-column: 1 / -1; text-align: center; padding: 50px; color: #777;">
-                    ไม่พบรายการร้านค้าโต๊ะจีนที่ได้รับการอนุมัติในขณะนี้
+                <div class="empty-state">
+                    ไม่พบร้านที่ตรงกับคำค้นหา ลองค้นด้วยชื่อจังหวัดหรือพื้นที่บริการอื่น
                 </div>
             <?php endif; ?>
         </div>
     </div>
 
+    <script src="dropdown.js?v=20260820-1"></script>
 </body>
 </html>

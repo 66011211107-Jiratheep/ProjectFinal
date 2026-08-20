@@ -3,11 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>สมัครสมาชิก (ลูกค้า) - เว็บไซต์อาหารจีน</title>
+    <title>สมัครสมาชิก (ลูกค้า) - โต๊ะจีนออนไลน์</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- นำเข้า Font Awesome สำหรับไอคอนลูกตา -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* จัดโครงสร้าง input-group ให้รองรับไอคอนลูกตา */
+        .password-group {
+            position: relative;
+            width: 100%;
+        }
+        
+        /* ปรับแต่งระยะห่างไม่ให้ข้อความพิมพ์ทับไอคอน */
+        .password-group input {
+            width: 100%;
+            padding-right: 40px !important;
+            box-sizing: border-box;
+        }
+
+        /* จัดตำแหน่งไอคอนลูกตาไว้ด้านขวามือ */
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #777;
+            z-index: 10;
+        }
+        
+        .toggle-password:hover {
+            color: #a00000;
+        }
+    </style>
+    <link rel="stylesheet" href="theme.css?v=20260820">
 </head>
-<body>
+<body class="page-auth">
 
     <header class="main-header">
         <div class="container">
@@ -23,7 +56,9 @@
 
     <main class="register-container">
         <div class="register-box">
-            <h2>สมัครสมาชิก (สำหรับลูกค้า)</h2>
+            <div class="auth-brand">โต๊ะจีนออนไลน์</div>
+            <h2>สมัครสมาชิกสำหรับลูกค้า</h2>
+            <p class="auth-subtitle">สร้างบัญชีเพื่อค้นหา เปรียบเทียบ และจองบริการโต๊ะจีนได้สะดวกขึ้น</p>
             <form action="register_process.php" method="POST">
                 <div class="input-group">
                     <input type="text" name="customer_name" placeholder="ชื่อ-นามสกุล" required>
@@ -34,25 +69,47 @@
                 <div class="input-group">
                     <input type="tel" name="tel" placeholder="Phone number" maxlength="10" required>
                 </div>
-                <div class="input-group">
-                    <input type="password" name="password" placeholder="Password" required>
+                
+                <!-- ช่อง Password + ไอคอนลูกตา -->
+                <div class="input-group password-group">
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                    <i class="fa-solid fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
                 </div>
-                <div class="input-group">
-                    <input type="password" name="confirm_password" placeholder="Confirm password" required>
+
+                <!-- ช่อง Confirm password + ไอคอนลูกตา -->
+                <div class="input-group password-group">
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password" required>
+                    <i class="fa-solid fa-eye toggle-password" onclick="togglePassword('confirm_password', this)"></i>
                 </div>
 
                 <div class="btn-group">
-                    <button type="submit" class="btn-submit">ยืนยัน</button>
+                    <button type="submit" class="btn-submit">สมัครสมาชิก</button>
                     <a href="index.php" class="btn-cancel">ยกเลิก</a>
                 </div>
                 
                 <!-- เพิ่มลิงก์สำหรับไปหน้าผู้ประกอบการ -->
-                <div style="margin-top: 20px; font-size: 14px;">
+                <div class="auth-switch">
                     <a href="register_provider.html" style="color: #a00000; text-decoration: underline;">คุณเป็นผู้ประกอบการใช่ไหม? สมัครเปิดร้านค้า</a>
                 </div>
             </form>
         </div>
     </main>
+
+    <!-- JS สำหรับสลับโหมดเปิด/ปิดตา -->
+    <script>
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
 
 </body>
 </html>

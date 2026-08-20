@@ -94,6 +94,7 @@ $res_bookings = $conn->query($sql_bookings);
 <html lang="th">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>รายการจอง - <?php echo htmlspecialchars($shop['shop_name']); ?></title>
     <style>
         body { font-family: Arial, sans-serif; background: #f8f9fa; padding: 20px; }
@@ -111,8 +112,9 @@ $res_bookings = $conn->query($sql_bookings);
         .btn-cancel { background: #dc3545; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 12px; display: inline-block; }
         .date-highlight { background: #fff3cd; font-weight: bold; padding: 3px 6px; border-radius: 3px; color: #856404; }
     </style>
+    <link rel="stylesheet" href="theme.css?v=20260820">
 </head>
-<body>
+<body class="page-provider-bookings provider-ui">
 <div class="container">
     <a href="provider_dashboard.php" class="btn-back">⬅ กลับ Dashboard</a>
     <h2>📅 รายการคิวงาน / การจองโต๊ะจีน</h2>

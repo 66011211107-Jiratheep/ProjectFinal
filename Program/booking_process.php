@@ -85,9 +85,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        echo "<script>alert('ส่งคำขอจองเรียบร้อยแล้ว!'); window.location.href='index.php';</script>";
+        // แจ้งเตือนสำเร็จ แล้วกลับมาที่หน้าปฏิทินของร้านเดิมทันที
+        echo "<script>
+            alert('🎉 ส่งคำขอจองเรียบร้อยแล้ว!');
+            window.location.href = 'booking.php?shop_id=" . $shop_id . "';
+        </script>";
+        exit();
+
     } else {
-        echo "<script>alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล: " . $conn->error . "'); window.history.back();</script>";
+        echo "<script>
+            alert('❌ เกิดข้อผิดพลาดในการบันทึกข้อมูล: " . addslashes($conn->error) . "');
+            window.history.back();
+        </script>";
+        exit();
     }
 } else {
     header("Location: index.php");

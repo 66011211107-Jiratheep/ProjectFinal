@@ -75,6 +75,7 @@ $res_packages = $conn->query($sql_packages);
 <html lang="th">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>จัดการแพ็กเกจ - <?php echo htmlspecialchars($shop['shop_name']); ?></title>
     <style>
         body { font-family: Arial, sans-serif; background: #f8f9fa; padding: 20px; }
@@ -91,8 +92,9 @@ $res_packages = $conn->query($sql_packages);
         .btn-delete { background: #dc3545; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 13px; }
         .img-preview { width: 80px; height: 60px; object-fit: cover; border-radius: 4px; }
     </style>
+    <link rel="stylesheet" href="theme.css?v=20260820">
 </head>
-<body>
+<body class="page-manage-packages provider-ui">
 <div class="container">
     <a href="provider_dashboard.php" class="btn-back">⬅ กลับ Dashboard</a>
     <h2>จัดการแพ็กเกจเมนูโต๊ะจีน</h2>

@@ -75,6 +75,7 @@ $res_service = $conn->query("SELECT * FROM additional_service WHERE shop_id = '$
 <html lang="th">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>จัดการรายการอาหารและบริการเสริม - <?php echo htmlspecialchars($shop['shop_name']); ?></title>
     <style>
         body { font-family: Arial, sans-serif; background: #f8f9fa; padding: 20px; }
@@ -93,8 +94,9 @@ $res_service = $conn->query("SELECT * FROM additional_service WHERE shop_id = '$
         .btn-del { color: #dc3545; text-decoration: none; font-weight: bold; }
         .img-thumb { width: 45px; height: 35px; object-fit: cover; border-radius: 3px; }
     </style>
+    <link rel="stylesheet" href="theme.css?v=20260820">
 </head>
-<body>
+<body class="page-manage-menu provider-ui">
 <div class="container">
     <a href="provider_dashboard.php" class="btn-back">⬅ กลับ Dashboard</a>
     <h2>จัดการรายการอาหาร และ บริการเสริม</h2>

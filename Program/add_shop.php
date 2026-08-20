@@ -72,8 +72,9 @@ if (!isset($_SESSION['role'])) {
             background-color: #a00000;
         }
     </style>
+    <link rel="stylesheet" href="theme.css?v=20260820">
 </head>
-<body>
+<body class="page-add-shop provider-ui">
 
 <div class="form-container">
     <h2>ลงทะเบียนข้อมูลร้านโต๊ะจีน</h2>

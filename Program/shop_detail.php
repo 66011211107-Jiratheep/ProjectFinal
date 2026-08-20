@@ -131,6 +131,21 @@ $res_pkg = $stmt_pkg->get_result();
             padding: 0 20px;
         }
 
+        /* ตกแต่งปุ่มกดกลับ */
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            color: #666;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 15px;
+            transition: color 0.2s;
+        }
+        .btn-back:hover {
+            color: #8b0000;
+        }
+
         .shop-header-card {
             background: white;
             border-radius: 12px;
@@ -232,8 +247,9 @@ $res_pkg = $stmt_pkg->get_result();
             margin-bottom: 12px;
         }
     </style>
+    <link rel="stylesheet" href="theme.css?v=20260820-3">
 </head>
-<body>
+<body class="page-shop-detail customer-ui">
 
     <div class="navbar">
         <a href="index.php" class="logo">โต๊ะจีนออนไลน์</a>
@@ -246,7 +262,7 @@ $res_pkg = $stmt_pkg->get_result();
             </ul>
         <?php else: ?>
             <div class="user-menu">
-                <span class="user-name">👤 <?php echo htmlspecialchars($_SESSION['name'] ?? 'ลูกค้า'); ?> ▾</span>
+                <button type="button" class="user-name" aria-haspopup="true" aria-expanded="false">👤 <?php echo htmlspecialchars($_SESSION['name'] ?? 'ลูกค้า'); ?> ▾</button>
                 <div class="dropdown-content">
                     <a href="profile.php">บัญชีของฉัน</a>
                     <a href="my_bookings.php">ประวัติการจอง</a>
@@ -257,8 +273,10 @@ $res_pkg = $stmt_pkg->get_result();
     </div>
 
     <div class="container">
+        <!-- ปุ่มกดกลับหน้าหลัก -->
+        <a href="index.php" class="btn-back">⬅ ย้อนกลับไปหน้าหลัก</a>
+
         <div class="shop-header-card">
-            <!-- 1. แก้ไขรูปภาพ: ใช้ shop_logo -->
             <?php if (!empty($shop['shop_logo'])): ?>
                 <img src="uploads/<?php echo htmlspecialchars($shop['shop_logo']); ?>" class="shop-detail-img" alt="<?php echo htmlspecialchars($shop['shop_name']); ?>">
             <?php else: ?>
@@ -266,15 +284,11 @@ $res_pkg = $stmt_pkg->get_result();
             <?php endif; ?>
 
             <div class="shop-detail-info">
+                <span class="verified-badge">✓ ร้านผ่านการอนุมัติ</span>
                 <div class="shop-detail-title"><?php echo htmlspecialchars($shop['shop_name']); ?></div>
                 
-                <!-- 2. แก้ไขที่อยู่: ใช้ address และ service_area -->
                 <div class="shop-meta">📍 <strong>ที่อยู่/พื้นที่บริการ:</strong> <?php echo htmlspecialchars(!empty($shop['address']) ? $shop['address'] : ($shop['service_area'] ?? 'ไม่ระบุ')); ?></div>
-                
-                <!-- 3. แก้ไขเบอร์โทร: ใช้ tel ที่ JOIN มาจากตาราง serviceprovider -->
                 <div class="shop-meta">📞 <strong>เบอร์โทรศัพท์:</strong> <?php echo htmlspecialchars(!empty($shop['tel']) ? $shop['tel'] : 'ไม่ระบุ'); ?></div>
-                
-                <!-- 4. แก้ไขรายละเอียด: ใช้ shop_detail -->
                 <div class="shop-meta">📝 <strong>รายละเอียดร้าน:</strong> <?php echo nl2br(htmlspecialchars(!empty($shop['shop_detail']) ? $shop['shop_detail'] : 'ไม่มีรายละเอียด')); ?></div>
 
                 <?php if ($is_logged_in): ?>
@@ -302,12 +316,13 @@ $res_pkg = $stmt_pkg->get_result();
                     </div>
                 <?php endwhile; ?>
             <?php else: ?>
-                <div style="grid-column: 1 / -1; background: white; padding: 30px; text-align: center; color: #777; border-radius: 8px;">
-                    ยังไม่มีข้อมูลแพ็กเกจอาหารสำหรับร้านนี้
+                <div class="empty-state">
+                    ร้านนี้ยังไม่มีข้อมูลแพ็กเกจอาหาร
                 </div>
             <?php endif; ?>
         </div>
     </div>
 
+    <script src="dropdown.js?v=20260820-1"></script>
 </body>
 </html>

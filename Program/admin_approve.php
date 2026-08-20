@@ -8,10 +8,11 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
+// แก้ไข SQL: เพิ่ม 'รอนุมัติ' (ไม่มี อ.) ให้ครอบคลุมทุกสถานะที่รออนุมัติ
 $sql = "SELECT b.*, COALESCE(p.provider_name, 'ไม่ระบุชื่อ') AS provider_name 
         FROM banquetshop b 
         LEFT JOIN serviceprovider p ON b.provider_id = p.provider_id 
-        WHERE b.shop_status = 'รอนุมัติ' 
+        WHERE b.shop_status IN ('รออนุมัติ', 'รอนุมัติ', 'pending') 
         ORDER BY b.upload_date DESC";
 $result = mysqli_query($conn, $sql);
 ?>
@@ -26,7 +27,7 @@ $result = mysqli_query($conn, $sql);
         body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; margin: 0; }
         .container { max-width: 1200px; background: #fff; padding: 20px; margin: 20px auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         
-        /* ตกแต่งส่วน Header และปุ่มออกจากระบบ */
+        /* ตกแต่งส่วน Header และปุ่มย้อนกลับ */
         .header-bar {
             display: flex;
             justify-content: space-between;
@@ -36,8 +37,10 @@ $result = mysqli_query($conn, $sql);
             border-bottom: 2px solid #8b0000;
         }
         .header-bar h2 { color: #8b0000; margin: 0; }
-        .btn-logout {
-            background-color: #dc3545;
+        
+        /* เปลี่ยนสไตล์ปุ่มย้อนกลับเป็นสีเทาอมน้ำเงิน */
+        .btn-back {
+            background-color: #6c757d;
             color: white;
             padding: 8px 16px;
             text-decoration: none;
@@ -46,7 +49,7 @@ $result = mysqli_query($conn, $sql);
             font-weight: bold;
             transition: background 0.2s;
         }
-        .btn-logout:hover { background-color: #bd2130; }
+        .btn-back:hover { background-color: #5a6268; }
 
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; vertical-align: top; }
@@ -58,15 +61,16 @@ $result = mysqli_query($conn, $sql);
         .doc-link { display: block; margin-bottom: 4px; color: #0056b3; text-decoration: none; }
         .doc-link:hover { text-decoration: underline; }
     </style>
+    <link rel="stylesheet" href="theme.css?v=20260820">
 </head>
-<body>
+<body class="page-admin-approve page-admin-table admin-ui">
 
 <div class="container">
-    <!-- แถบด้านบน: หัวข้อ + ปุ่มออกจากระบบ -->
+    <!-- แถบด้านบน: หัวข้อ + ปุ่มกลับหน้าหลัก -->
     <div class="header-bar">
         <h2>รายการร้านโต๊ะจีนที่รอการอนุมัติ</h2>
-        <a href="logout.php" class="btn-logout" onclick="return confirm('คุณต้องการออกจากระบบหรือไม่?');">
-            🚪 ออกจากระบบ
+        <a href="admin_dashboard.php" class="btn-back">
+            ⬅️ กลับหน้าหลัก
         </a>
     </div>
 
@@ -153,7 +157,7 @@ $result = mysqli_query($conn, $sql);
                         <a href="admin_process_approve.php?action=approve&id=<?php echo $row['shop_id']; ?>" 
                            class="btn-approve" 
                            onclick="return confirm('ยืนยันการอนุมัติร้านค้านี้?');">
-                           ✅ อนุมัติ
+                            ✅ อนุมัติ
                         </a>
 
                         <button class="btn-reject" onclick="toggleRejectBox(<?php echo $row['shop_id']; ?>)">❌ ไม่อนุมัติ</button>
